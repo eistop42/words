@@ -100,6 +100,9 @@
             display: inline-block;
             margin-right: 10px;
         }
+        .active {
+            color: pink !important;
+        }
     </style>
 </head>
 
@@ -111,30 +114,13 @@
 
     <div class="card menu">
         <a href="/">Главная</a>
-        <a href="?status=learned">Изученные</a>
+        <a href="?status=izucheno" {% if status == 'izucheno'%} class="active" {% endif %}>Изученные</a>
     </div>
 
     <div class="card">
         <form id="addWordForm" method="post">
-            <input type="hidden" name="csrfmiddlewaretoken"
-                   value="utbXnF2LNCISugaSsXkjWugzSNUpHbNkJHGWQGvaXZIVW6hWoWQjHRot1HqgPc2c">
-            <div>
-                <label for="id_text">текст:</label>
-
-
-                <input type="text" name="text" placeholder="Слово" maxlength="100" required id="id_text">
-
-            </div>
-
-            <div>
-                <label for="id_translate">перевод:</label>
-
-
-                <input type="text" name="translate" placeholder="Перевод" maxlength="100" required
-                       id="id_translate">
-
-
-            </div>
+            {% csrf_token %}
+             {{ form.as_div }}
             <button type="submit">Добавить слово</button>
         </form>
     </div>

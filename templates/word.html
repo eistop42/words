@@ -119,18 +119,26 @@
 <div class="card">
     <h2 id="wordTitle">{{ word.slovo }}</h2>
     <h2 id="translation">{{  word.perevod }}</h2>
-    <p>Статус: На изучении</p>
+    <p>Статус: {{ word.get_status_display }}</p>
 
+    {% if word.status != 'izucheno' %}
     <div class="button-form">
-        <form method="post" action="/words/3/learn">
-            <input type="hidden" name="csrfmiddlewaretoken" value="uPM9FS3PwGNasQw0TEDUUIe8QGS11TSMJ3h88TweG3NdUGD4PD9UF5m2ZAoS9U7E">
+        <form method="post" action="{% url 'word_izucheno' word.id %}">
+            {% csrf_token %}
             <button>Отметить изученным</button>
         </form>
-
     </div>
+    {% else %}
     <div class="button-form">
-        <form method="post" action="/words/3/delete">
-            <input type="hidden" name="csrfmiddlewaretoken" value="uPM9FS3PwGNasQw0TEDUUIe8QGS11TSMJ3h88TweG3NdUGD4PD9UF5m2ZAoS9U7E">
+        <form method="post" action="{% url 'word_na_izuchenii' word.id %}">
+            {% csrf_token %}
+            <button>Вернуть на изучение</button>
+        </form>
+    </div>
+    {% endif %}
+    <div class="button-form">
+        <form method="post" action="{% url 'delete_word' word.id %}">
+            {% csrf_token %}
             <button>Удалить</button>
         </form>
     </div>
