@@ -147,28 +147,16 @@
 <div class="card">
     <h3>Заметки</h3>
     <form id="noteForm" method="post">
-        <input type="hidden" name="csrfmiddlewaretoken" value="uPM9FS3PwGNasQw0TEDUUIe8QGS11TSMJ3h88TweG3NdUGD4PD9UF5m2ZAoS9U7E">
-        <div>
-    <label for="id_note">заметка:</label>
-
-
-
-<textarea name="note" cols="40" rows="4" placeholder="Введите заметку здесь..." required id="id_note">
-</textarea>
-    
-      
-    
-</div>
+        {% csrf_token %}
+        {{ form.as_div }}
         <button type="submit">Добавить</button>
     </form>
     <div id="notes">
-        
-        <div class="note">ыфва</div>
-        
-        <div class="note">ыфва</div>
-        
-        <div class="note">хорошее слово</div>
-        
+        {% for zametka in zametki %}
+        <div class="note">{{ zametka.text }}</div>
+        {% empty %}
+         <p>Заметок пока нет</p>
+        {% endfor %}
     </div>
 </div>
 

@@ -15,8 +15,26 @@ class Word(models.Model):
     def __str__(self):
         return self.slovo
 
+    def unique_error_message(self, model_class, unique_check):
+        if unique_check == ('slovo', 'perevod'):
+            return "Такая пара слов уже есть"
+        return super().unique_error_message(model_class, unique_check)
+
     class Meta:
         verbose_name = 'слово'
         verbose_name_plural = 'слова'
+        unique_together = (('slovo', 'perevod'), )
 
 
+
+class Zametka(models.Model):
+    text = models.TextField(verbose_name='текст заметки', max_length=1000)
+    word = models.ForeignKey(Word, on_delete=models.CASCADE, related_name='zametki', verbose_name='слово')
+
+
+    def __str__(self):
+        return self.text[:10]
+
+    class Meta:
+        verbose_name = 'заметка'
+        verbose_name_plural = 'заметки'
