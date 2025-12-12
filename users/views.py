@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login as login_func, logout as logout_func
+from django.contrib.auth import login as login_func, logout as logout_func, authenticate
 
 from .forms import LoginForm, RegisterForm
+from .models import User, Profile
 
 def login(request):
 
@@ -34,7 +35,25 @@ def register(request):
         form = RegisterForm(request.POST)
 
         if form.is_valid():
-            # создание пользователя и профиля
+
+            username = form.cleaned_data['login']
+            password = form.cleaned_data['password_1']
+
+            # создание пользователя
+            user = User(username=username)
+            user.set_password(password)
+            user.save()
+
+            # создание профиля пользователя
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+
+            profile = Profile(user=user,first_name=first_name, last_name=last_name)
+            profile.save()
+
+            # авторизуем пользователя
+            user = authenticate(request, username=user.username, password=password)
+            login_func(request, user)
 
             return redirect('/')
 

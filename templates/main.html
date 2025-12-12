@@ -127,6 +127,8 @@
         {% endif %}
     </div>
 
+    {% if request.user.is_authenticated  %}
+
     <div class="card">
         <form id="addWordForm" method="post">
             {% csrf_token %}
@@ -135,8 +137,8 @@
         </form>
     </div>
 
-    <div class="card" id="wordList">
 
+    <div class="card" id="wordList">
         {% for word in words %}
         <div class="word-item">
                 <span>
@@ -146,8 +148,10 @@
                 </span>
         </div>
         {% endfor %}
-
     </div>
+    {% else %}
+    <a href="{% url 'login' %}">Войдите, чтобы добавлять слова</a>
+    {% endif %}
 
 
 </div>

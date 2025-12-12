@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.shortcuts import render, redirect, Http404
+from django.contrib.auth.decorators import login_required
+
 from django.views import View
 from django.views.generic import TemplateView
 
@@ -10,10 +11,14 @@ def main(request):
 
     form = AddWordForm()
 
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.is_authenticated:
         form = AddWordForm(request.POST)
         if form.is_valid():
-            form.save()
+
+            # привязываем слово к пользователю
+            word = form.save(commit=False)
+            word.profile = request.user.profile
+            word.save()
 
             # обновляем форму
             form = AddWordForm()
@@ -21,19 +26,30 @@ def main(request):
 
     status = request.GET.get('status')
 
-    if status:
-        words = Word.objects.filter(status=status)
-    else:
-        words = Word.objects.all() # select * from word
+    words = []
+    if request.user.is_authenticated:
+        profile = request.user.profile
+
+        words = Word.objects.filter(profile=profile)
+
+        if status:
+            words = words.filter(status=status)
 
     context = {'words': words, 'status': status, 'form': form}
     return render(request, 'main.html', context)
 
+
+@login_required
 def word(request, word_id):
 
+    profile = request.user.profile
     word = Word.objects.get(id=word_id)
+
+    if profile.id != word.profile.id:
+        raise Http404
+
     zametki = word.zametki.all()
-    zametki2 = Zametka.objecsts.filter(word_id=word_id)
+    zametki2 = Zametka.objects.filter(word_id=word_id)
 
     form = AddZametkaForm()
 

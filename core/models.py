@@ -1,5 +1,6 @@
 from django.db import models
 
+from users.models import Profile
 
 class Word(models.Model):
 
@@ -11,6 +12,7 @@ class Word(models.Model):
     slovo = models.CharField(max_length=200, verbose_name='слово')
     perevod = models.CharField(max_length=200, verbose_name='перевод')
     status = models.CharField(max_length=20, choices=STATUS, default=NA_IZUCHENII, verbose_name='статус')
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name='профиль пользователя')
 
     def __str__(self):
         return self.slovo
