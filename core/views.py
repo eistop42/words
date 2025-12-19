@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, Http404
 from django.contrib.auth.decorators import login_required
-
+from django.http import JsonResponse
 from django.views import View
 from django.views.generic import TemplateView
 
@@ -114,3 +114,13 @@ class MyTemplateView(TemplateView):
     def get_context_data(self, **kwargs):
         # a = 4 / 0
         return {'name': 'Alisa'}
+
+
+def testjs(request):
+    print('Новый запрос')
+    return render(request, 'testjs.html' )
+
+
+def get_data(request):
+
+    return JsonResponse({'text': 'привет'})
