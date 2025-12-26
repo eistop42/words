@@ -153,8 +153,37 @@
     <a href="{% url 'login' %}">Войдите, чтобы добавлять слова</a>
     {% endif %}
 
+    <div class="card">
+        <button id="like">Сказать спасибо 🧡 </button>
+        <b>
+        <span id="likes-count">{{ likes_counter.count }}</span> <span id="after"> </span>
+        </b>
+    </div>
+
 
 </div>
+
+<script>
+    const like = document.querySelector('#like')
+    const likes_count = document.querySelector('#likes-count')
+
+    like.onclick = function(){
+        console.log('кликнул!')
+
+        fetch('/api/like_counter', {
+            method: 'POST', 
+            headers:{
+                'Content-Type': 'application/json'
+            }, 
+            body: JSON.stringify({'slug': 'main'})
+        })
+        .then( res => res.json())
+        .then( data => {
+                likes_count.textContent = data.count
+        })
+    }
+
+</script>
 
 </body>
 

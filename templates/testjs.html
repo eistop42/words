@@ -7,6 +7,7 @@
 <body>
 <h1>Тренировка JS</h1>
 <div id="content"></div>
+<div id="server-data"></div>
 <button>Клик</button>
 <button id="money">Дать денег</button>
 <button id="server">Сходить на сервер</button>
@@ -14,8 +15,7 @@
     const mybutton = document.querySelector('button')
     const money = document.querySelector('#money')
     const server = document.querySelector('#server')
-
-    console.log(mybutton)
+    const server_data = document.querySelector('#server-data')
 
     mybutton.onclick = function (){
         const mydiv = document.querySelector('#content')
@@ -30,7 +30,11 @@
     server.onclick = function (){
             fetch('http://127.0.0.1:8000/get_data')
             .then(res => res.json())
-            .then(console.log)
+            .then(
+                data => {
+                server_data.textContent = data.text
+                }
+            )
         }
 
 

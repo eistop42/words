@@ -11,5 +11,6 @@ urlpatterns = [
     path('hello', HelloView.as_view()),
     path('template', MyTemplateView.as_view()),
     path('js', testjs),
-    path('get_data', get_data)
+    path('get_data', get_data),
+    path('api/like_counter', like_counter),
 ]

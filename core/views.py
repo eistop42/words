@@ -1,14 +1,19 @@
+import json
+
 from django.shortcuts import render, redirect, Http404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views import View
 from django.views.generic import TemplateView
+from django.views.decorators.csrf import csrf_exempt
+from django.core.exceptions import ObjectDoesNotExist
 
-from .models import Word, Zametka
+from .models import Word, Zametka, LikesCounter
 from .forms import AddWordForm, AddZametkaForm
 
 def main(request):
 
+    likes_counter = LikesCounter.objects.get(slug='main')
     form = AddWordForm()
 
     if request.method == 'POST' and request.user.is_authenticated:
@@ -35,7 +40,7 @@ def main(request):
         if status:
             words = words.filter(status=status)
 
-    context = {'words': words, 'status': status, 'form': form}
+    context = {'words': words, 'status': status, 'form': form, 'likes_counter': likes_counter}
     return render(request, 'main.html', context)
 
 
@@ -122,5 +127,23 @@ def testjs(request):
 
 
 def get_data(request):
-
     return JsonResponse({'text': 'привет'})
+
+@csrf_exempt
+def like_counter(request):
+    data = request.body.decode('utf-8') # декодируем
+    data = json.loads(data) # из json превращаем в питоновские типы
+
+    counter_slug = data.get('slug')
+    if not counter_slug:
+        return JsonResponse({}, status=400)
+
+    try:
+        counter = LikesCounter.objects.get(slug=counter_slug)
+    except ObjectDoesNotExist:
+        return JsonResponse({}, status=400)
+
+    counter.count += 1
+    counter.save()
+
+    return JsonResponse({'count': counter.count})

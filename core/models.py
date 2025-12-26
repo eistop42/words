@@ -40,3 +40,16 @@ class Zametka(models.Model):
     class Meta:
         verbose_name = 'заметка'
         verbose_name_plural = 'заметки'
+
+
+class LikesCounter(models.Model):
+    name = models.CharField(verbose_name='имя', max_length=255)
+    slug = models.SlugField(unique=True, verbose_name='кодовое название')
+    count = models.IntegerField(default=0, verbose_name='количество спасибок')
+
+    def __str__(self):
+        return self.name
+    class Meta:
+        verbose_name = 'счетчик спасибок'
+        verbose_name_plural = 'счетчики спасибок'
+
